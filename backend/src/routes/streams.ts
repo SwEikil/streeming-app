@@ -1,7 +1,7 @@
 import type { FastifyInstance, FastifyRequest } from 'fastify'
 import { z } from 'zod'
 import { pool } from '../db'
-import { generateStreamKey } from '../utils/streams'
+import { env } from '../config/env'
 
 const createStreamSchema = z.object({
   title: z.string().min(3).max(120)
@@ -10,8 +10,6 @@ const createStreamSchema = z.object({
 const idParamSchema = z.object({
   id: z.string().uuid()
 })
-
-const INGEST_BASE = 'rtmp://localhost/live'
 
 export async function registerStreamRoutes (app: FastifyInstance): Promise<void> {
   app.get('/streams', async (request: FastifyRequest) => {
@@ -30,7 +28,7 @@ export async function registerStreamRoutes (app: FastifyInstance): Promise<void>
       title: s.title,
       status: s.status,
       ingest_url: s.user_id === userId ? s.ingest_url : null,
-      stream_key: s.user_id === userId ? s.stream_key : null,
+      stream_key: s.user_id === userId ? s.id : null,
       user_id: s.user_id,
       created_at: s.created_at
     }))
@@ -43,13 +41,17 @@ export async function registerStreamRoutes (app: FastifyInstance): Promise<void>
       return await reply.code(400).send({ error: parsed.error.flatten() })
     }
     const { title } = parsed.data
-    const key = generateStreamKey()
-    const ingestUrl = `${INGEST_BASE}/${request.user.sub}`
-    const res = await pool.query(
-      'INSERT INTO streams (user_id, title, status, ingest_url, stream_key) VALUES ($1, $2, $3, $4, $5) RETURNING *',
-      [request.user.sub, title, 'offline', ingestUrl, key]
+    const created = await pool.query(
+      'INSERT INTO streams (user_id, title, status) VALUES ($1, $2, $3) RETURNING *',
+      [request.user.sub, title, 'offline']
     )
-    return { stream: res.rows[0] }
+    const streamId = created.rows[0].id as string
+    const ingestUrl = `${env.RTMP_INGEST_BASE_URL}/${streamId}`
+    const updated = await pool.query(
+      'UPDATE streams SET ingest_url=$1, stream_key=$2, updated_at=now() WHERE id=$3 RETURNING *',
+      [ingestUrl, streamId, streamId]
+    )
+    return { stream: updated.rows[0] }
   })
 
   app.post('/streams/:id/start', { preHandler: [app.authenticate] }, async (request, reply) => {
@@ -63,10 +65,9 @@ export async function registerStreamRoutes (app: FastifyInstance): Promise<void>
     if (record.user_id !== request.user.sub && request.user.role !== 'admin') {
       return await reply.code(403).send({ error: 'Forbidden' })
     }
-    const newKey = generateStreamKey()
     const updated = await pool.query(
-      'UPDATE streams SET status=$1, stream_key=$2, updated_at=now() WHERE id=$3 RETURNING *',
-      ['live', newKey, params.data.id]
+      'UPDATE streams SET status=$1, updated_at=now() WHERE id=$2 RETURNING *',
+      ['live', params.data.id]
     )
     return { stream: updated.rows[0] }
   })

@@ -2,13 +2,13 @@ import { useState } from 'react'
 import { Player } from './Player'
 import { Chat } from './Chat'
 import { api } from '../api'
+import { getMediaServerUrl } from '../config/env'
 
 interface Stream {
   id: string
   title: string
   status: string
   ingest_url: string | null
-  stream_key: string | null
   user_id: string
 }
 
@@ -20,16 +20,19 @@ interface Props {
   onDelete: (id: string) => void
 }
 
-const sampleHls = 'https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8'
+const mediaServerUrl = getMediaServerUrl()
 
 export function WatchPage ({ stream, user, onBack, onRefresh, onDelete }: Props): JSX.Element {
   const isOwner = user != null && user.id === stream.user_id
   const [followed, setFollowed] = useState(false)
-  const [keyVisible, setKeyVisible] = useState(false)
 
-  const playbackUrl = stream.ingest_url != null
-    ? stream.ingest_url.replace('rtmp://', 'http://').replace('/live', '/hls') + '/index.m3u8'
-    : sampleHls
+  const playbackUrl = `${mediaServerUrl}/hls/${stream.id}/index.m3u8`
+  const defaultObsServer = 'rtmp://localhost/live'
+  const obsServer = (
+    stream.ingest_url != null && stream.ingest_url.endsWith(`/${stream.id}`)
+      ? stream.ingest_url.slice(0, -(`/${stream.id}`).length)
+      : defaultObsServer
+  )
 
   const handleStart = async (): Promise<void> => {
     try { await api.post(`/streams/${stream.id}/start`); onRefresh() } catch { /* */ }
@@ -110,32 +113,22 @@ export function WatchPage ({ stream, user, onBack, onRefresh, onDelete }: Props)
         {isOwner && stream.ingest_url != null && (
           <div className="watch-ingest">
             <div className="ingest-row">
-              <span className="ingest-label">RTMP URL</span>
-              <code>{stream.ingest_url}</code>
-              <button className="btn-copy" onClick={() => { copyToClipboard(stream.ingest_url) }} title="Копіювати">
+              <span className="ingest-label">Server</span>
+              <code>{obsServer}</code>
+              <button className="btn-copy" onClick={() => { copyToClipboard(obsServer) }} title="Копіювати">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                   <rect x="9" y="9" width="13" height="13" rx="2" /><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1" />
                 </svg>
               </button>
             </div>
             <div className="ingest-row">
-              <span className="ingest-label">Ключ</span>
-              <code>{keyVisible ? stream.stream_key : '••••••••••••••••'}</code>
-              <button className="btn-copy" onClick={() => { setKeyVisible(!keyVisible) }} title={keyVisible ? 'Приховати' : 'Показати'}>
+              <span className="ingest-label">Stream Key</span>
+              <code>{stream.id}</code>
+              <button className="btn-copy" onClick={() => { copyToClipboard(stream.id) }} title="Копіювати">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  {keyVisible
-                    ? <><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" /><circle cx="12" cy="12" r="3" /></>
-                    : <><path d="M17.9 17.4A10.1 10.1 0 0112 20c-7 0-11-8-11-8a18.5 18.5 0 015.1-5.4M9.9 4.2A9.1 9.1 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.2 3.1" /><line x1="1" y1="1" x2="23" y2="23" /></>
-                  }
+                  <rect x="9" y="9" width="13" height="13" rx="2" /><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1" />
                 </svg>
               </button>
-              {keyVisible && (
-                <button className="btn-copy" onClick={() => { copyToClipboard(stream.stream_key) }} title="Копіювати">
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                    <rect x="9" y="9" width="13" height="13" rx="2" /><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1" />
-                  </svg>
-                </button>
-              )}
             </div>
           </div>
         )}

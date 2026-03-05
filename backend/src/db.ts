@@ -57,6 +57,20 @@ export async function migrate (): Promise<void> {
       CREATE INDEX IF NOT EXISTS idx_streams_status ON streams(status);
       CREATE INDEX IF NOT EXISTS idx_chat_bans_stream_user ON chat_bans(stream_id, user_id);
     `)
+
+    // Keep ingest/key semantics consistent for OBS and Nginx:
+    // ingest is always {RTMP_INGEST_BASE_URL}/{streamId}, key is streamId.
+    await client.query(
+      `UPDATE streams
+       SET ingest_url=$1 || '/' || id::text,
+           stream_key=id::text,
+           updated_at=now()
+       WHERE ingest_url IS NULL
+          OR ingest_url <> $1 || '/' || id::text
+          OR stream_key IS NULL
+          OR stream_key <> id::text`,
+      [env.RTMP_INGEST_BASE_URL]
+    )
   } finally {
     client.release()
   }

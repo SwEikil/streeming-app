@@ -5,7 +5,6 @@ interface Stream {
   title: string
   status: string
   ingest_url: string | null
-  stream_key: string | null
   user_id: string
   created_at?: string
 }

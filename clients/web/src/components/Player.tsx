@@ -15,7 +15,13 @@ export function Player ({ src }: Props): JSX.Element {
     setError(false)
 
     if (Hls.isSupported()) {
-      const hls = new Hls({ enableWorker: true, lowLatencyMode: true })
+      const hls = new Hls({
+        enableWorker: true,
+        lowLatencyMode: true,
+        xhrSetup: (xhr) => {
+          xhr.setRequestHeader('ngrok-skip-browser-warning', 'true')
+        }
+      })
       hls.loadSource(src)
       hls.attachMedia(video)
       hls.on(Hls.Events.ERROR, (_e, data) => {

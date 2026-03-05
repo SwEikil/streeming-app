@@ -1,4 +1,5 @@
 import { useEffect, useState, useCallback, useRef } from 'react'
+import type { AxiosError } from 'axios'
 import { api, setAuthToken, setRefreshToken, clearAuth, getStoredToken } from './api'
 import { TopBar } from './components/TopBar'
 import { Sidebar } from './components/Sidebar'
@@ -11,7 +12,6 @@ interface Stream {
   title: string
   status: string
   ingest_url: string | null
-  stream_key: string | null
   user_id: string
   created_at?: string
 }
@@ -55,7 +55,10 @@ export default function App (): JSX.Element {
     try {
       const res = await api.get('/auth/me')
       setUser(res.data.user)
-    } catch { clearAuth() }
+    } catch (error) {
+      const status = (error as AxiosError).response?.status
+      if (status === 401) clearAuth()
+    }
   }, [])
 
   useEffect(() => {
