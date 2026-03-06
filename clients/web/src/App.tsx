@@ -8,6 +8,7 @@ import { StreamGrid } from './components/StreamGrid'
 import { WatchPage } from './components/WatchPage'
 import { AuthModal } from './components/AuthModal'
 import { Dashboard } from './components/Dashboard'
+import { BrowsePage } from './components/BrowsePage'
 
 interface Stream {
 <<<<<<< HEAD
@@ -132,19 +133,11 @@ export default function App (): JSX.Element {
           {view === 'watch' && selected != null ? (
             <WatchPage stream={selected} user={user} onBack={navigateHome} onRefresh={() => { void fetchStreams() }} onDelete={handleDelete} onNavigateDashboard={() => { setView('dashboard') }} />
           ) : view === 'dashboard' && user != null ? (
-            <Dashboard streams={streams} userId={user.id} onRefresh={() => { void fetchStreams() }} onDelete={handleDelete} flash={flash} />
+            <Dashboard streams={streams} userId={user.id} onRefresh={() => { void fetchStreams() }} onDelete={handleDelete} flash={flash} onShowCreate={() => { setShowCreate(true) }} />
+          ) : view === 'browse' ? (
+            <BrowsePage streams={streams} onWatch={handleWatch} />
           ) : (
-            <>
-              {user != null && (
-                <div className="create-bar">
-                  <button className="btn-create" onClick={() => { setShowCreate(true) }}>
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="12" y1="5" x2="12" y2="19" /><line x1="5" y1="12" x2="19" y2="12" /></svg>
-                    {t('createStream')}
-                  </button>
-                </div>
-              )}
-              <StreamGrid streams={streams} onWatch={handleWatch} searchQuery={searchQuery} />
-            </>
+            <StreamGrid streams={streams} onWatch={handleWatch} searchQuery={searchQuery} />
           )}
         </main>
       </div>

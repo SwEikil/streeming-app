@@ -21,9 +21,10 @@ interface Props {
   onRefresh: () => void
   onDelete: (id: string) => void
   flash: (text: string, type?: 'ok' | 'err') => void
+  onShowCreate: () => void
 }
 
-export function Dashboard ({ streams, userId, onRefresh, onDelete, flash }: Props): JSX.Element {
+export function Dashboard ({ streams, userId, onRefresh, onDelete, flash, onShowCreate }: Props): JSX.Element {
   const { t } = useI18n()
   const myStreams = streams.filter(s => s.user_id === userId)
   const [visibleKeys, setVisibleKeys] = useState<Set<string>>(new Set())
@@ -70,6 +71,10 @@ export function Dashboard ({ streams, userId, onRefresh, onDelete, flash }: Prop
     <div className="dashboard">
       <div className="dash-header">
         <h1>{t('dashboardTitle')}</h1>
+        <button className="btn-create" onClick={onShowCreate}>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="12" y1="5" x2="12" y2="19" /><line x1="5" y1="12" x2="19" y2="12" /></svg>
+          {t('createStream')}
+        </button>
       </div>
 
       {myStreams.length === 0 ? (
