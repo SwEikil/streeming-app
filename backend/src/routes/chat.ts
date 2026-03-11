@@ -1,8 +1,9 @@
 import type { FastifyInstance } from 'fastify'
 import websocket from '@fastify/websocket'
+import type { SocketStream } from '@fastify/websocket'
 
 interface Client {
-  socket: websocket.SocketStream
+  socket: SocketStream
   userId: string | null
   userName: string | null
 }
