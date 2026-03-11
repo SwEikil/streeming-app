@@ -131,7 +131,7 @@ export default function App (): JSX.Element {
 
         <main className={`main-content ${sidebarOpen ? '' : 'expanded'}`}>
           {view === 'watch' && selected != null ? (
-            <WatchPage stream={selected} user={user} onBack={navigateHome} onRefresh={() => { void fetchStreams() }} onDelete={handleDelete} onNavigateDashboard={() => { setView('dashboard') }} />
+            <WatchPage stream={selected} user={user} onBack={navigateHome} onRefresh={() => { void fetchStreams() }} onDelete={handleDelete} />
           ) : view === 'dashboard' && user != null ? (
             <Dashboard streams={streams} userId={user.id} onRefresh={() => { void fetchStreams() }} onDelete={handleDelete} flash={flash} onShowCreate={() => { setShowCreate(true) }} />
           ) : view === 'browse' ? (
@@ -206,7 +206,7 @@ export default function App (): JSX.Element {
             <p className="modal-body-text">{t('streamCreatedDesc')}</p>
             <div className="modal-actions">
               <button className="btn-primary btn-full" onClick={() => { setShowCreatedSuccess(false); setView('dashboard') }}>{t('goToDashboard')}</button>
-              <button className="btn-ghost btn-full" onClick={() => { setShowCreatedSuccess(false) }}>{t('cancel')}</button>
+              <button className="btn-ghost btn-full" onClick={() => { setShowCreatedSuccess(false) }}>{t('later')}</button>
             </div>
           </div>
         </div>

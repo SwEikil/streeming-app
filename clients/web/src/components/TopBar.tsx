@@ -78,7 +78,7 @@ export function TopBar ({ user, onLogin, onLogout, onSearch, onNavigateHome, onN
                 </button>
                 <div className="menu-divider" />
                 <div className="menu-lang-section">
-                  <span className="menu-label">{t('streamLanguage')}</span>
+                  <span className="menu-label">{t('interfaceLang')}</span>
                   <div className="menu-lang-row">
                     {(['ua', 'en', 'ru'] as Lang[]).map(l => (
                       <button key={l} className={`menu-lang-btn ${l === lang ? 'active' : ''}`} onClick={() => { setLang(l) }}>
@@ -102,8 +102,7 @@ export function TopBar ({ user, onLogin, onLogout, onSearch, onNavigateHome, onN
                 <button key={l} className={`lang-mini ${l === lang ? 'active' : ''}`} onClick={() => { setLang(l) }}>{FLAGS[l]}</button>
               ))}
             </div>
-            <button className="btn-login" onClick={onLogin}>{t('login')}</button>
-            <button className="btn-signup" onClick={onLogin}>{t('register')}</button>
+            <button className="btn-signup" onClick={onLogin}>{t('login')}</button>
           </div>
         )}
       </div>

@@ -10,6 +10,8 @@ const translations = {
   login: { ua: 'Увійти', en: 'Log In', ru: 'Войти' },
   register: { ua: 'Реєстрація', en: 'Sign Up', ru: 'Регистрация' },
   logout: { ua: 'Вийти', en: 'Log Out', ru: 'Выйти' },
+  interfaceLang: { ua: 'Мова інтерфейсу', en: 'Interface Language', ru: 'Язык интерфейса' },
+  later: { ua: 'Пізніше', en: 'Later', ru: 'Позже' },
 
   // ---- Sidebar ----
   home: { ua: 'Головна', en: 'Home', ru: 'Главная' },
