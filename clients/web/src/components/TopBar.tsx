@@ -13,8 +13,8 @@ interface Props {
   searchValue: string
 }
 
-const FLAGS: Record<Lang, string> = { ua: '🇺🇦', en: '🇬🇧', ru: '🇷🇺' }
-const LANG_NAMES: Record<Lang, string> = { ua: 'Українська', en: 'English', ru: 'Русский' }
+const FLAGS: Record<Lang, string> = { ua: '🇺🇦', en: '🇬🇧', no: '🇳🇴' }
+const LANG_NAMES: Record<Lang, string> = { ua: 'Українська', en: 'English', no: 'Norsk' }
 
 export function TopBar ({ user, onLogin, onLogout, onSearch, onNavigateHome, onNavigateDashboard, sidebarOpen, onToggleSidebar, searchValue }: Props): JSX.Element {
   const { t, lang, setLang } = useI18n()
@@ -80,7 +80,7 @@ export function TopBar ({ user, onLogin, onLogout, onSearch, onNavigateHome, onN
                 <div className="menu-lang-section">
                   <span className="menu-label">{t('interfaceLang')}</span>
                   <div className="menu-lang-row">
-                    {(['ua', 'en', 'ru'] as Lang[]).map(l => (
+                    {(['ua', 'en', 'no'] as Lang[]).map(l => (
                       <button key={l} className={`menu-lang-btn ${l === lang ? 'active' : ''}`} onClick={() => { setLang(l) }}>
                         {FLAGS[l]}
                       </button>
@@ -98,7 +98,7 @@ export function TopBar ({ user, onLogin, onLogout, onSearch, onNavigateHome, onN
         ) : (
           <div className="topbar-auth">
             <div className="topbar-lang-mini">
-              {(['ua', 'en', 'ru'] as Lang[]).map(l => (
+              {(['ua', 'en', 'no'] as Lang[]).map(l => (
                 <button key={l} className={`lang-mini ${l === lang ? 'active' : ''}`} onClick={() => { setLang(l) }}>{FLAGS[l]}</button>
               ))}
             </div>

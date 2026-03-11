@@ -1,129 +1,129 @@
 import { createContext, useContext, useState, useCallback, type ReactNode } from 'react'
 
-export type Lang = 'ua' | 'en' | 'ru'
+export type Lang = 'ua' | 'en' | 'no'
 
 const LANG_KEY = 'streeming_lang'
 
 const translations = {
   // ---- TopBar ----
-  search: { ua: 'Пошук стрімів…', en: 'Search streams…', ru: 'Поиск стримов…' },
-  login: { ua: 'Увійти', en: 'Log In', ru: 'Войти' },
-  register: { ua: 'Реєстрація', en: 'Sign Up', ru: 'Регистрация' },
-  logout: { ua: 'Вийти', en: 'Log Out', ru: 'Выйти' },
-  interfaceLang: { ua: 'Мова інтерфейсу', en: 'Interface Language', ru: 'Язык интерфейса' },
-  later: { ua: 'Пізніше', en: 'Later', ru: 'Позже' },
+  search: { ua: 'Пошук стрімів…', en: 'Search streams…', no: 'Søk etter strømmer…' },
+  login: { ua: 'Увійти', en: 'Log In', no: 'Logg inn' },
+  register: { ua: 'Реєстрація', en: 'Sign Up', no: 'Registrer' },
+  logout: { ua: 'Вийти', en: 'Log Out', no: 'Logg ut' },
+  interfaceLang: { ua: 'Мова інтерфейсу', en: 'Interface Language', no: 'Språk' },
+  later: { ua: 'Пізніше', en: 'Later', no: 'Senere' },
 
   // ---- Sidebar ----
-  home: { ua: 'Головна', en: 'Home', ru: 'Главная' },
-  browse: { ua: 'Огляд', en: 'Browse', ru: 'Обзор' },
-  dashboard: { ua: 'Панель керування', en: 'Dashboard', ru: 'Панель управления' },
-  liveChannels: { ua: 'LIVE КАНАЛИ', en: 'LIVE CHANNELS', ru: 'LIVE КАНАЛЫ' },
-  recommended: { ua: 'РЕКОМЕНДОВАНІ', en: 'RECOMMENDED', ru: 'РЕКОМЕНДУЕМЫЕ' },
-  offline: { ua: 'Офлайн', en: 'Offline', ru: 'Офлайн' },
+  home: { ua: 'Головна', en: 'Home', no: 'Hjem' },
+  browse: { ua: 'Огляд', en: 'Browse', no: 'Utforsk' },
+  dashboard: { ua: 'Панель керування', en: 'Dashboard', no: 'Kontrollpanel' },
+  liveChannels: { ua: 'LIVE КАНАЛИ', en: 'LIVE CHANNELS', no: 'LIVE-KANALER' },
+  recommended: { ua: 'РЕКОМЕНДОВАНІ', en: 'RECOMMENDED', no: 'ANBEFALT' },
+  offline: { ua: 'Офлайн', en: 'Offline', no: 'Frakoblet' },
 
   // ---- StreamGrid ----
-  liveNow: { ua: 'Наживо', en: 'Live Now', ru: 'В эфире' },
-  streams_count: { ua: 'стрімів', en: 'streams', ru: 'стримов' },
-  channels_count: { ua: 'каналів', en: 'channels', ru: 'каналов' },
-  recommendedChannels: { ua: 'Рекомендовані канали', en: 'Recommended Channels', ru: 'Рекомендуемые каналы' },
-  noStreams: { ua: 'Поки немає стрімів', en: 'No streams yet', ru: 'Пока нет стримов' },
-  createFirst: { ua: 'Створіть свій перший стрім!', en: 'Create your first stream!', ru: 'Создайте свой первый стрим!' },
-  searchResults: { ua: 'Результати пошуку', en: 'Search results', ru: 'Результаты поиска' },
-  allStreams: { ua: 'Усі стріми', en: 'All streams', ru: 'Все стримы' },
+  liveNow: { ua: 'Наживо', en: 'Live Now', no: 'Direkte nå' },
+  streams_count: { ua: 'стрімів', en: 'streams', no: 'strømmer' },
+  channels_count: { ua: 'каналів', en: 'channels', no: 'kanaler' },
+  recommendedChannels: { ua: 'Рекомендовані канали', en: 'Recommended Channels', no: 'Anbefalte kanaler' },
+  noStreams: { ua: 'Поки немає стрімів', en: 'No streams yet', no: 'Ingen strømmer ennå' },
+  createFirst: { ua: 'Створіть свій перший стрім!', en: 'Create your first stream!', no: 'Opprett din første strøm!' },
+  searchResults: { ua: 'Результати пошуку', en: 'Search results', no: 'Søkeresultater' },
+  allStreams: { ua: 'Усі стріми', en: 'All streams', no: 'Alle strømmer' },
 
   // ---- StreamCard ----
-  live: { ua: 'Наживо', en: 'Live', ru: 'В эфире' },
+  live: { ua: 'Наживо', en: 'Live', no: 'Direkte' },
 
   // ---- Auth modal ----
-  loginTitle: { ua: 'Увійти в Streeming', en: 'Log in to Streeming', ru: 'Вход в Streeming' },
-  registerTitle: { ua: 'Створити акаунт', en: 'Create Account', ru: 'Создать аккаунт' },
-  email: { ua: 'Email', en: 'Email', ru: 'Email' },
-  password: { ua: 'Пароль', en: 'Password', ru: 'Пароль' },
-  passwordMin: { ua: 'Мінімум 8 символів', en: 'Minimum 8 characters', ru: 'Минимум 8 символов' },
-  noAccount: { ua: 'Немає акаунту?', en: "Don't have an account?", ru: 'Нет аккаунта?' },
-  hasAccount: { ua: 'Вже є акаунт?', en: 'Already have an account?', ru: 'Уже есть аккаунт?' },
-  authRequired: { ua: 'Email та пароль (мін. 8 символів) обов\'язкові', en: 'Email and password (min 8 chars) required', ru: 'Email и пароль (мин. 8 символов) обязательны' },
-  authError: { ua: 'Помилка авторизації', en: 'Authentication error', ru: 'Ошибка авторизации' },
-  wait: { ua: 'Зачекайте…', en: 'Please wait…', ru: 'Подождите…' },
+  loginTitle: { ua: 'Увійти в Streeming', en: 'Log in to Streeming', no: 'Logg inn på Streeming' },
+  registerTitle: { ua: 'Створити акаунт', en: 'Create Account', no: 'Opprett konto' },
+  email: { ua: 'Email', en: 'Email', no: 'E-post' },
+  password: { ua: 'Пароль', en: 'Password', no: 'Passord' },
+  passwordMin: { ua: 'Мінімум 8 символів', en: 'Minimum 8 characters', no: 'Minst 8 tegn' },
+  noAccount: { ua: 'Немає акаунту?', en: "Don't have an account?", no: 'Har du ikke en konto?' },
+  hasAccount: { ua: 'Вже є акаунт?', en: 'Already have an account?', no: 'Har du allerede en konto?' },
+  authRequired: { ua: 'Email та пароль (мін. 8 символів) обов\'язкові', en: 'Email and password (min 8 chars) required', no: 'E-post og passord (min 8 tegn) kreves' },
+  authError: { ua: 'Помилка авторизації', en: 'Authentication error', no: 'Autentiseringsfeil' },
+  wait: { ua: 'Зачекайте…', en: 'Please wait…', no: 'Vennligst vent…' },
 
   // ---- Create stream ----
-  createStream: { ua: 'Створити стрім', en: 'Create Stream', ru: 'Создать стрим' },
-  streamTitle: { ua: 'Назва стріму', en: 'Stream Title', ru: 'Название стрима' },
-  streamTitlePlaceholder: { ua: 'Наприклад: Fortnite Ranked', en: 'e.g. Fortnite Ranked', ru: 'Например: Fortnite Ranked' },
-  streamDescription: { ua: 'Опис', en: 'Description', ru: 'Описание' },
-  streamDescPlaceholder: { ua: 'Розкажіть про свій стрім…', en: 'Tell about your stream…', ru: 'Расскажите о стриме…' },
-  streamCategory: { ua: 'Категорія', en: 'Category', ru: 'Категория' },
-  selectCategory: { ua: 'Оберіть категорію', en: 'Select category', ru: 'Выберите категорию' },
-  streamLanguage: { ua: 'Мова стріму', en: 'Stream Language', ru: 'Язык стрима' },
-  create: { ua: 'Створити', en: 'Create', ru: 'Создать' },
-  cancel: { ua: 'Скасувати', en: 'Cancel', ru: 'Отмена' },
-  streamCreated: { ua: 'Стрім створено!', en: 'Stream created!', ru: 'Стрим создан!' },
-  streamCreatedDesc: { ua: 'Ваші ключі для стріму готові. Перейдіть у Панель керування щоб їх побачити.', en: 'Your stream keys are ready. Go to Dashboard to see them.', ru: 'Ваши ключи для стрима готовы. Перейдите в Панель управления чтобы увидеть их.' },
-  goToDashboard: { ua: 'Перейти до панелі', en: 'Go to Dashboard', ru: 'Перейти к панели' },
-  titleMin: { ua: 'Назва мін. 3 символи', en: 'Title min. 3 characters', ru: 'Название мин. 3 символа' },
-  createError: { ua: 'Не вдалось створити стрім', en: 'Failed to create stream', ru: 'Не удалось создать стрим' },
+  createStream: { ua: 'Створити стрім', en: 'Create Stream', no: 'Opprett strøm' },
+  streamTitle: { ua: 'Назва стріму', en: 'Stream Title', no: 'Strømmens tittel' },
+  streamTitlePlaceholder: { ua: 'Наприклад: Fortnite Ranked', en: 'e.g. Fortnite Ranked', no: 'f.eks. Fortnite Ranked' },
+  streamDescription: { ua: 'Опис', en: 'Description', no: 'Beskrivelse' },
+  streamDescPlaceholder: { ua: 'Розкажіть про свій стрім…', en: 'Tell about your stream…', no: 'Fortell om strømmen din…' },
+  streamCategory: { ua: 'Категорія', en: 'Category', no: 'Kategori' },
+  selectCategory: { ua: 'Оберіть категорію', en: 'Select category', no: 'Velg kategori' },
+  streamLanguage: { ua: 'Мова стріму', en: 'Stream Language', no: 'Strømmens språk' },
+  create: { ua: 'Створити', en: 'Create', no: 'Opprett' },
+  cancel: { ua: 'Скасувати', en: 'Cancel', no: 'Avbryt' },
+  streamCreated: { ua: 'Стрім створено!', en: 'Stream created!', no: 'Strøm opprettet!' },
+  streamCreatedDesc: { ua: 'Ваші ключі для стріму готові. Перейдіть у Панель керування щоб їх побачити.', en: 'Your stream keys are ready. Go to Dashboard to see them.', no: 'Strømnøklene dine er klare. Gå til Kontrollpanel for å se dem.' },
+  goToDashboard: { ua: 'Перейти до панелі', en: 'Go to Dashboard', no: 'Gå til kontrollpanel' },
+  titleMin: { ua: 'Назва мін. 3 символи', en: 'Title min. 3 characters', no: 'Tittel min. 3 tegn' },
+  createError: { ua: 'Не вдалось створити стрім', en: 'Failed to create stream', no: 'Kunne ikke opprette strøm' },
 
   // ---- Dashboard ----
-  dashboardTitle: { ua: 'Панель керування', en: 'Creator Dashboard', ru: 'Панель управления' },
-  yourStreams: { ua: 'Ваші стріми', en: 'Your Streams', ru: 'Ваши стримы' },
-  streamSettings: { ua: 'Налаштування стріму', en: 'Stream Settings', ru: 'Настройки стрима' },
-  rtmpUrl: { ua: 'URL сервера', en: 'Server URL', ru: 'URL сервера' },
-  streamKey: { ua: 'Ключ стріму', en: 'Stream Key', ru: 'Ключ стрима' },
-  copied: { ua: 'Скопійовано!', en: 'Copied!', ru: 'Скопировано!' },
-  goLive: { ua: 'Розпочати стрім', en: 'Go Live', ru: 'Начать стрим' },
-  stopStream: { ua: 'Зупинити', en: 'Stop', ru: 'Остановить' },
-  deleteStream: { ua: 'Видалити', en: 'Delete', ru: 'Удалить' },
-  deleteConfirm: { ua: 'Видалити цей стрім?', en: 'Delete this stream?', ru: 'Удалить этот стрим?' },
-  noOwnStreams: { ua: 'У вас ще немає стрімів', en: 'You have no streams yet', ru: 'У вас пока нет стримов' },
-  obsHint: { ua: 'Використовуйте ці дані у OBS Studio або іншому ПЗ для трансляцій', en: 'Use these in OBS Studio or other broadcasting software', ru: 'Используйте эти данные в OBS Studio или другом ПО для трансляций' },
-  show: { ua: 'Показати', en: 'Show', ru: 'Показать' },
-  hide: { ua: 'Сховати', en: 'Hide', ru: 'Скрыть' },
+  dashboardTitle: { ua: 'Панель керування', en: 'Creator Dashboard', no: 'Kontrollpanel' },
+  yourStreams: { ua: 'Ваші стріми', en: 'Your Streams', no: 'Dine strømmer' },
+  streamSettings: { ua: 'Налаштування стріму', en: 'Stream Settings', no: 'Strøminnstillinger' },
+  rtmpUrl: { ua: 'URL сервера', en: 'Server URL', no: 'Server-URL' },
+  streamKey: { ua: 'Ключ стріму', en: 'Stream Key', no: 'Strømnøkkel' },
+  copied: { ua: 'Скопійовано!', en: 'Copied!', no: 'Kopiert!' },
+  goLive: { ua: 'Розпочати стрім', en: 'Go Live', no: 'Start strøm' },
+  stopStream: { ua: 'Зупинити', en: 'Stop', no: 'Stopp' },
+  deleteStream: { ua: 'Видалити', en: 'Delete', no: 'Slett' },
+  deleteConfirm: { ua: 'Видалити цей стрім?', en: 'Delete this stream?', no: 'Slette denne strømmen?' },
+  noOwnStreams: { ua: 'У вас ще немає стрімів', en: 'You have no streams yet', no: 'Du har ingen strømmer ennå' },
+  obsHint: { ua: 'Використовуйте ці дані у OBS Studio або іншому ПЗ для трансляцій', en: 'Use these in OBS Studio or other broadcasting software', no: 'Bruk disse i OBS Studio eller annen kringkastingsprogramvare' },
+  show: { ua: 'Показати', en: 'Show', no: 'Vis' },
+  hide: { ua: 'Сховати', en: 'Hide', no: 'Skjul' },
 
   // ---- Watch ----
-  follow: { ua: 'Підписатись', en: 'Follow', ru: 'Подписаться' },
-  following: { ua: 'Підписано', en: 'Following', ru: 'Подписан' },
-  back: { ua: 'Назад', en: 'Back', ru: 'Назад' },
+  follow: { ua: 'Підписатись', en: 'Follow', no: 'Følg' },
+  following: { ua: 'Підписано', en: 'Following', no: 'Følger' },
+  back: { ua: 'Назад', en: 'Back', no: 'Tilbake' },
 
   // ---- Chat ----
-  chatTitle: { ua: 'Чат стріму', en: 'Stream Chat', ru: 'Чат стрима' },
-  chatWelcome: { ua: 'Вітаємо у чаті!', en: 'Welcome to the chat!', ru: 'Добро пожаловать в чат!' },
-  chatFirst: { ua: 'Напишіть перше повідомлення', en: 'Send the first message', ru: 'Напишите первое сообщение' },
-  chatPlaceholder: { ua: 'Надіслати повідомлення', en: 'Send a message', ru: 'Отправить сообщение' },
-  connecting: { ua: 'З\'єднання…', en: 'Connecting…', ru: 'Подключение…' },
-  guest: { ua: 'Гість', en: 'Guest', ru: 'Гость' },
+  chatTitle: { ua: 'Чат стріму', en: 'Stream Chat', no: 'Strøm-chat' },
+  chatWelcome: { ua: 'Вітаємо у чаті!', en: 'Welcome to the chat!', no: 'Velkommen til chatten!' },
+  chatFirst: { ua: 'Напишіть перше повідомлення', en: 'Send the first message', no: 'Send den første meldingen' },
+  chatPlaceholder: { ua: 'Надіслати повідомлення', en: 'Send a message', no: 'Send en melding' },
+  connecting: { ua: 'З\'єднання…', en: 'Connecting…', no: 'Kobler til…' },
+  guest: { ua: 'Гість', en: 'Guest', no: 'Gjest' },
 
   // ---- Toasts ----
-  welcome: { ua: 'Ласкаво просимо!', en: 'Welcome!', ru: 'Добро пожаловать!' },
-  loggedOut: { ua: 'Ви вийшли з акаунту', en: 'You have logged out', ru: 'Вы вышли из аккаунта' },
-  streamDeleted: { ua: 'Стрім видалено', en: 'Stream deleted', ru: 'Стрим удалён' },
+  welcome: { ua: 'Ласкаво просимо!', en: 'Welcome!', no: 'Velkommen!' },
+  loggedOut: { ua: 'Ви вийшли з акаунту', en: 'You have logged out', no: 'Du har logget ut' },
+  streamDeleted: { ua: 'Стрім видалено', en: 'Stream deleted', no: 'Strøm slettet' },
 
   // ---- Categories ----
-  cat_gaming: { ua: 'Ігри', en: 'Gaming', ru: 'Игры' },
-  cat_irl: { ua: 'IRL', en: 'IRL', ru: 'IRL' },
-  cat_music: { ua: 'Музика', en: 'Music', ru: 'Музыка' },
-  cat_esports: { ua: 'Кіберспорт', en: 'Esports', ru: 'Киберспорт' },
-  cat_creative: { ua: 'Творчість', en: 'Creative', ru: 'Творчество' },
-  cat_education: { ua: 'Навчання', en: 'Education', ru: 'Образование' },
-  cat_talkshow: { ua: 'Ток-шоу', en: 'Talk Show', ru: 'Ток-шоу' },
-  cat_other: { ua: 'Інше', en: 'Other', ru: 'Другое' },
+  cat_gaming: { ua: 'Ігри', en: 'Gaming', no: 'Spill' },
+  cat_irl: { ua: 'IRL', en: 'IRL', no: 'IRL' },
+  cat_music: { ua: 'Музика', en: 'Music', no: 'Musikk' },
+  cat_esports: { ua: 'Кіберспорт', en: 'Esports', no: 'E-sport' },
+  cat_creative: { ua: 'Творчість', en: 'Creative', no: 'Kreativt' },
+  cat_education: { ua: 'Навчання', en: 'Education', no: 'Utdanning' },
+  cat_talkshow: { ua: 'Ток-шоу', en: 'Talk Show', no: 'Talkshow' },
+  cat_other: { ua: 'Інше', en: 'Other', no: 'Annet' },
 
   // ---- Thumbnail ----
-  thumbnail: { ua: 'Превʼю стріму', en: 'Stream Thumbnail', ru: 'Превью стрима' },
-  thumbnailHint: { ua: 'JPG, PNG або WebP, до 5 МБ', en: 'JPG, PNG or WebP, up to 5 MB', ru: 'JPG, PNG или WebP, до 5 МБ' },
-  uploadThumbnail: { ua: 'Завантажити превʼю', en: 'Upload Thumbnail', ru: 'Загрузить превью' },
-  changeThumbnail: { ua: 'Змінити', en: 'Change', ru: 'Изменить' },
-  thumbnailUploaded: { ua: 'Превʼю завантажено!', en: 'Thumbnail uploaded!', ru: 'Превью загружено!' },
+  thumbnail: { ua: 'Превʼю стріму', en: 'Stream Thumbnail', no: 'Strøm-miniatyrbilde' },
+  thumbnailHint: { ua: 'JPG, PNG або WebP, до 5 МБ', en: 'JPG, PNG or WebP, up to 5 MB', no: 'JPG, PNG eller WebP, opptil 5 MB' },
+  uploadThumbnail: { ua: 'Завантажити превʼю', en: 'Upload Thumbnail', no: 'Last opp miniatyrbilde' },
+  changeThumbnail: { ua: 'Змінити', en: 'Change', no: 'Endre' },
+  thumbnailUploaded: { ua: 'Превʼю завантажено!', en: 'Thumbnail uploaded!', no: 'Miniatyrbilde lastet opp!' },
 
   // ---- Chat features ----
-  chatViewers: { ua: 'глядачів', en: 'viewers', ru: 'зрителей' },
-  chatRules: { ua: 'Правила чату', en: 'Chat Rules', ru: 'Правила чата' },
-  chatRulesText: { ua: 'Будьте ввічливі. Без спаму та реклами.', en: 'Be respectful. No spam or ads.', ru: 'Будьте вежливы. Без спама и рекламы.' },
-  chatJoined: { ua: 'приєднався до чату', en: 'joined the chat', ru: 'присоединился к чату' },
+  chatViewers: { ua: 'глядачів', en: 'viewers', no: 'seere' },
+  chatRules: { ua: 'Правила чату', en: 'Chat Rules', no: 'Chat-regler' },
+  chatRulesText: { ua: 'Будьте ввічливі. Без спаму та реклами.', en: 'Be respectful. No spam or ads.', no: 'Vær respektfull. Ingen spam eller reklame.' },
+  chatJoined: { ua: 'приєднався до чату', en: 'joined the chat', no: 'ble med i chatten' },
 
   // ---- Language names ----
-  lang_ua: { ua: 'Українська', en: 'Ukrainian', ru: 'Украинский' },
-  lang_en: { ua: 'English', en: 'English', ru: 'English' },
-  lang_ru: { ua: 'Російська', en: 'Russian', ru: 'Русский' },
+  lang_ua: { ua: 'Українська', en: 'Ukrainian', no: 'Ukrainsk' },
+  lang_en: { ua: 'English', en: 'English', no: 'English' },
+  lang_no: { ua: 'Norsk', en: 'Norwegian', no: 'Norsk' },
 } as const
 
 export type TKey = keyof typeof translations
@@ -143,7 +143,8 @@ const I18nContext = createContext<I18nCtx>({
 export function I18nProvider ({ children }: { children: ReactNode }): JSX.Element {
   const [lang, setLangState] = useState<Lang>(() => {
     const stored = localStorage.getItem(LANG_KEY)
-    if (stored === 'en' || stored === 'ru' || stored === 'ua') return stored
+    if (stored === 'en' || stored === 'no' || stored === 'ua') return stored
+    if (stored === 'ru') return 'ua'
     return 'ua'
   })
 
@@ -175,4 +176,4 @@ export function getCategoryKey (cat: Category): TKey {
   return `cat_${cat}` as TKey
 }
 
-export const STREAM_LANGUAGES: Lang[] = ['ua', 'en', 'ru']
+export const STREAM_LANGUAGES: Lang[] = ['ua', 'en', 'no']
