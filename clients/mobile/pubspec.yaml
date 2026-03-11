@@ -1,7 +1,7 @@
 name: streeming_mobile
-description: "Flutter клієнт для Streeming App (глядач)"
+description: "Flutter клієнт для Streeming App"
 publish_to: "none"
-version: 0.1.0+1
+version: 0.2.0+1
 
 environment:
   sdk: ">=3.3.0 <4.0.0"
@@ -11,6 +11,7 @@ dependencies:
     sdk: flutter
   http: ^1.2.0
   video_player: ^2.8.6
+  web_socket_channel: ^3.0.0
 
 dev_dependencies:
   flutter_test:
